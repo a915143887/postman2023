@@ -1,0 +1,645 @@
+{
+	"info": {
+		"_postman_id": "b1aa1fe9-b029-4cac-b26c-c398a9070b6f",
+		"name": "复习-ihrm管理系统第九天",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "天气（关联）",
+			"item": [
+				{
+					"name": "天气（前）",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"a_city\", pm.response.json().weatherinfo.city);\r",
+									"var a = pm.environment.get(\"a_city\");\r",
+									"console.log(\"环境变量a_city的值：\", a);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://www.weather.com.cn/data/sk/101010100.html",
+							"protocol": "http",
+							"host": [
+								"www",
+								"weather",
+								"com",
+								"cn"
+							],
+							"path": [
+								"data",
+								"sk",
+								"101010100.html"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "天气（后）",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://www.baidu.com/s?wd={{a_city}}",
+							"protocol": "http",
+							"host": [
+								"www",
+								"baidu",
+								"com"
+							],
+							"path": [
+								"s"
+							],
+							"query": [
+								{
+									"key": "wd",
+									"value": "{{a_city}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ihrm管理系统",
+			"item": [
+				{
+					"name": "登录",
+					"item": [
+						{
+							"name": "test001_正常登录",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"响应状态码：200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"code：10000\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.code).to.eql(10000);\r",
+											"});\r",
+											"pm.test(\"success：true\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.success).to.eql(true);\r",
+											"});\r",
+											"pm.test(\"message：\\\"操作成功！\\\"\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"操作成功！\");\r",
+											"});\r",
+											"pm.environment.set(\"Authorization\", \"Bearer \" + pm.response.json().data);\r",
+											"var a = pm.environment.get(\"Authorization\");\r",
+											"console.log(\"环境变量Authorization的值：\", a);\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"mobile\":\"13800000002\",\"password\":\"123456\"}"
+								},
+								"url": {
+									"raw": "{{ihrm_url}}:{{port}}/api/sys/login",
+									"host": [
+										"{{ihrm_url}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"sys",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "test002_异常登录_12位手机号码",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"响应状态码：200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"code：20001\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.code).to.eql(20001);\r",
+											"});\r",
+											"pm.test(\"success：false\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.success).to.eql(false);\r",
+											"});\r",
+											"pm.test(\"message：\\\"用户名或密码错误\\\"\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"用户名或密码错误\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"mobile\":\"138000000022\",\"password\":\"123456\"}"
+								},
+								"url": {
+									"raw": "{{ihrm_url}}:{{port}}/api/sys/login",
+									"host": [
+										"{{ihrm_url}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"sys",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "test003_异常登录_10位手机号码",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"响应状态码：200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"code：20001\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.code).to.eql(20001);\r",
+											"});\r",
+											"pm.test(\"success：false\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.success).to.eql(false);\r",
+											"});\r",
+											"pm.test(\"message：\\\"用户名或密码错误\\\"\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"用户名或密码错误\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"mobile\":\"1380000000\",\"password\":\"123456\"}"
+								},
+								"url": {
+									"raw": "{{ihrm_url}}:{{port}}/api/sys/login",
+									"host": [
+										"{{ihrm_url}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"sys",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "test004_异常登录_不填写手机号",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"响应状态码：200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"code：20001\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.code).to.eql(20001);\r",
+											"});\r",
+											"pm.test(\"success：false\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.success).to.eql(false);\r",
+											"});\r",
+											"pm.test(\"message：\\\"用户名或密码错误\\\"\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"用户名或密码错误\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"mobile\":\"\",\"password\":\"123456\"}"
+								},
+								"url": {
+									"raw": "{{ihrm_url}}:{{port}}/api/sys/login",
+									"host": [
+										"{{ihrm_url}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"sys",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "员工管理",
+					"item": [
+						{
+							"name": "test005_正常添加员工",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"响应状态码：200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"success：true\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.success).to.eql(true);\r",
+											"});\r",
+											"pm.test(\"code：10000\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.code).to.eql(10000);\r",
+											"});\r",
+											"pm.test(\"message：\\\"操作成功！\\\"\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"操作成功！\");\r",
+											"});\r",
+											"pm.test(\"响应头中包含：Content-Type\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"pm.test(\"响应体中包含：id\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+											"});\r",
+											"pm.environment.set(\"test_id\", pm.response.json().data.id);\r",
+											"var a = pm.environment.get(\"test_id\");\r",
+											"console.log(\"环境变量test_id的值：\", a);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "default"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{Authorization}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\"username\":\"1234qe31\",\r\n\"mobile\":\"18814101043\",\r\n\"timeOfEntry\":\"2022-03-01\",\r\n\"formOfEmployment\":2,\r\n\"workNumber\":\"12345678102\",\r\n\"departmentId\":\"1504870825596067840\",\r\n\"correctionTime\":\"2022-03-30T16:00:00.000Z\"\r\n}"
+								},
+								"url": {
+									"raw": "{{ihrm_url}}:{{port}}/api/sys/user",
+									"host": [
+										"{{ihrm_url}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"sys",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "test006_正常查询员工",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"响应状态码：200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"success：true\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.success).to.eql(true);\r",
+											"});\r",
+											"pm.test(\"code：10000\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.code).to.eql(10000);\r",
+											"});\r",
+											"pm.test(\"message：\\\"操作成功！\\\"\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"操作成功！\");\r",
+											"});\r",
+											"pm.test(\"响应头中包含：Content-Type\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"pm.test(\"响应体中包含：id\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "default"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{Authorization}}",
+										"type": "default"
+									}
+								],
+								"url": {
+									"raw": "{{ihrm_url}}:{{port}}/api/sys/user/{{test_id}}",
+									"host": [
+										"{{ihrm_url}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"sys",
+										"user",
+										"{{test_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "test007_正常修改员工",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"响应状态码：200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"success：true\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.success).to.eql(true);\r",
+											"});\r",
+											"pm.test(\"code：10000\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.code).to.eql(10000);\r",
+											"});\r",
+											"pm.test(\"message：\\\"操作成功！\\\"\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"操作成功！\");\r",
+											"});\r",
+											"pm.test(\"响应体中包含：id\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+											"});\r",
+											"pm.test(\"响应头中包含：Content-Type\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "default"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{Authorization}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\":\"e34qa18\"}"
+								},
+								"url": {
+									"raw": "{{ihrm_url}}:9988/api/sys/user/{{test_id}}",
+									"host": [
+										"{{ihrm_url}}"
+									],
+									"port": "9988",
+									"path": [
+										"api",
+										"sys",
+										"user",
+										"{{test_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "test008_正常删除员工",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"响应状态码：200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"code：10000\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.code).to.eql(10000);\r",
+											"});\r",
+											"pm.test(\"success：true\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.success).to.eql(true);\r",
+											"});\r",
+											"pm.test(\"message：\\\"操作成功！\\\"\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"操作成功！\");\r",
+											"});\r",
+											"pm.test(\"响应头中包含：Content-Type\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"pm.test(\"响应体中包含：id\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"id\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "default"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{Authorization}}",
+										"type": "default"
+									}
+								],
+								"url": {
+									"raw": "{{ihrm_url}}:{{port}}/api/sys/user/{{test_id}}",
+									"host": [
+										"{{ihrm_url}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"sys",
+										"user",
+										"{{test_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "参数化",
+			"item": [
+				{
+					"name": "登录",
+					"item": [
+						{
+							"name": "参数化-登录",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"判断响应状态码\", function () {\r",
+											"    pm.response.to.have.status(data.status_code);\r",
+											"});\r",
+											"pm.test(\"判断code\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.code).to.eql(data.code);\r",
+											"});\r",
+											"pm.test(\"判断success\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.success).to.eql(JSON.parse(data.success));\r",
+											"});\r",
+											"pm.test(\"判断message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(data.message);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"mobile\":\"{{mobile}}\",\"password\":\"{{password}}\"}"
+								},
+								"url": {
+									"raw": "{{ihrm_url}}:{{port}}/api/sys/login",
+									"host": [
+										"{{ihrm_url}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"api",
+										"sys",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
